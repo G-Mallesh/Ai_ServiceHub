@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reviews - AI Service Hub</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        nav {
+            background: white;
+            padding: 18px 35px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.08);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #172554;
+        }
+
+        .logo span {
+            color: #2563eb;
+        }
+
+        .container {
+            width: 94%;
+            max-width: 1250px;
+            margin: 35px auto;
+        }
+
+        .back {
+            display: inline-block;
+            text-decoration: none;
+            background: #2563eb;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 7px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #172554;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        .table-box {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,.07);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+            padding: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .stars {
+            color: #f59e0b;
+            font-size: 18px;
+            letter-spacing: 2px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #6b7280;
+            padding: 35px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<nav>
+
+    <div class="logo">
+        AI Service<span>Hub</span>
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <a href="{{ url_for('admin_dashboard') }}" class="back">
+        ← Back to Dashboard
+    </a>
+
+    <h1>⭐ Reviews</h1>
+
+    <p class="subtitle">
+        View customer ratings and reviews submitted on AI Service Hub.
+    </p>
+
+
+    <div class="table-box">
+
+        {% if reviews %}
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Service</th>
+                    <th>Rating</th>
+                    <th>Review</th>
+                    <th>Date</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for review in reviews %}
+
+                <tr>
+
+                    <td>
+                        {{ review.id }}
+                    </td>
+
+                    <td>
+                        {{ review.customer_name or 'Unknown' }}
+                    </td>
+
+                    <td>
+                        {{ review.service_name or 'Unknown' }}
+                    </td>
+
+                    <td>
+
+                        <span class="stars">
+
+                            {% if review.rating %}
+                                {% for i in range(review.rating|int) %}
+                                    ★
+                                {% endfor %}
+                            {% else %}
+                                No rating
+                            {% endif %}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+                        {{ review.review or 'No written review' }}
+                    </td>
+
+                    <td>
+                        {{ review.created_at or 'N/A' }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="empty">
+
+            <h3>No reviews yet</h3>
+
+            <p>
+                Customer reviews will appear here after customers rate completed bookings.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
+

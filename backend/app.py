@@ -2887,6 +2887,232 @@ def worker_ratings():
         "worker_ratings.html",
         ratings=ratings
     )
+#====adview===
+@app.route("/admin/reviews")
+@login_required
+
+def admin_reviews():
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT
+                r.id,
+                r.rating,
+                r.review,
+                r.created_at,
+                u.name AS customer_name,
+                s.name AS service_name
+            FROM reviews r
+            LEFT JOIN users u ON r.user_id = u.id
+            LEFT JOIN services s ON r.service_id = s.id
+            ORDER BY r.id DESC
+        """)
+
+        reviews = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        return render_template(
+            "admin_reviews.html",
+            reviews=reviews
+        )
+
+    except Exception as e:
+        print("Admin reviews error:", e)
+        return render_template(
+            "admin_reviews.html",
+            reviews=[]
+        )
+# ============================================================
+# CUSTOMER MESSAGE WORKER
+# ============================================================
+
+@app.route(
+    "/message-worker/<int:booking_id>",
+    methods=["GET", "POST"]
+)
+@login_required
+@role_required("customer")
+def message_worker(booking_id):
+
+    customer_id = session["user_id"]
+
+    try:
+
+        # ====================================================
+        # GET BOOKING
+        # ====================================================
+
+        booking = query(
+            """
+            SELECT
+                b.id,
+                b.customer_id,
+                b.service_id,
+                b.worker_id,
+                b.status,
+
+                s.name AS service_name,
+
+                u.name AS worker_name,
+                u.phone AS worker_phone
+
+            FROM bookings b
+
+            LEFT JOIN services s
+                ON s.id = b.service_id
+
+            LEFT JOIN users u
+                ON u.id = b.worker_id
+
+            WHERE b.id = %s
+              AND b.customer_id = %s
+
+            LIMIT 1
+            """,
+            (
+                booking_id,
+                customer_id
+            ),
+            fetchone=True
+        )
+
+        # ====================================================
+        # BOOKING NOT FOUND
+        # ====================================================
+
+        if not booking:
+
+            flash(
+                "Booking not found.",
+                "danger"
+            )
+
+            return redirect(
+                url_for("my_bookings")
+            )
+
+        # ====================================================
+        # SEND MESSAGE
+        # ====================================================
+
+        if request.method == "POST":
+
+            message_text = request.form.get(
+                "message",
+                ""
+            ).strip()
+
+            if not message_text:
+
+                flash(
+                    "Please enter a message.",
+                    "warning"
+                )
+
+                return redirect(
+                    url_for(
+                        "message_worker",
+                        booking_id=booking_id
+                    )
+                )
+
+            query(
+                """
+                INSERT INTO messages
+                (
+                    booking_id,
+                    sender_id,
+                    receiver_id,
+                    message
+                )
+
+                VALUES
+                (
+                    %s,
+                    %s,
+                    %s,
+                    %s
+                )
+                """,
+                (
+                    booking_id,
+                    customer_id,
+                    booking["worker_id"],
+                    message_text
+                )
+            )
+
+            flash(
+                "Message sent to the worker.",
+                "success"
+            )
+
+            return redirect(
+                url_for(
+                    "message_worker",
+                    booking_id=booking_id
+                )
+            )
+
+        # ====================================================
+        # LOAD CONVERSATION
+        # ====================================================
+
+        messages = query(
+            """
+            SELECT
+                m.id,
+                m.booking_id,
+                m.sender_id,
+                m.receiver_id,
+                m.message,
+
+                sender.name AS sender_name,
+
+                receiver.name AS receiver_name
+
+            FROM messages m
+
+            LEFT JOIN users sender
+                ON sender.id = m.sender_id
+
+            LEFT JOIN users receiver
+                ON receiver.id = m.receiver_id
+
+            WHERE m.booking_id = %s
+
+            ORDER BY m.id ASC
+            """,
+            (booking_id,),
+            fetch=True
+        )
+
+        return render_template(
+            "message_worker.html",
+            booking=booking,
+            messages=messages
+        )
+
+    except Exception as error:
+
+        print(
+            "MESSAGE WORKER ERROR:",
+            error
+        )
+
+        flash(
+            "Unable to load messaging.",
+            "danger"
+        )
+
+        return redirect(
+            url_for("my_bookings")
+        )   
 # ============================================================
 # HEALTH
 # ============================================================

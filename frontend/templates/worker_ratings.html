@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}Customer Ratings{% endblock %}
+
+{% block content %}
+
+<div class="page-container">
+
+    <div class="page-header">
+
+        <div>
+            <span class="hero-badge">REVIEWS</span>
+
+            <h1>Customer Ratings</h1>
+
+            <p>
+                See ratings and reviews from your customers.
+            </p>
+        </div>
+
+        <a href="{{ url_for('worker_dashboard') }}"
+           class="btn btn-secondary">
+            ← Dashboard
+        </a>
+
+    </div>
+
+
+    {% if ratings %}
+
+        {% for rating in ratings %}
+
+        <div class="rating-card">
+
+            <div class="rating-top">
+
+                <div>
+
+                    <h2>
+                        {{ rating.customer_name }}
+                    </h2>
+
+                    <p>
+                        {{ rating.service_name }}
+                    </p>
+
+                </div>
+
+                <div class="stars">
+
+                    {% for i in range(rating.rating|int) %}
+                        ⭐
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+            <div class="rating-score">
+
+                {{ rating.rating }}/5
+
+            </div>
+
+
+            {% if rating.review %}
+
+            <div class="review-box">
+
+                <p>
+                    "{{ rating.review }}"
+                </p>
+
+            </div>
+
+            {% endif %}
+
+
+            <p class="booking-number">
+
+                Booking #{{ rating.booking_id }}
+
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty-box">
+
+            <h2>⭐ No Ratings Yet</h2>
+
+            <p>
+                Customers have not submitted any ratings yet.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<style>
+
+.page-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.rating-card {
+    background: white;
+    padding: 25px;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(15,23,42,.08);
+}
+
+.rating-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rating-top h2 {
+    margin: 0;
+    color: #172554;
+}
+
+.rating-top p {
+    color: #64748b;
+}
+
+.stars {
+    font-size: 25px;
+}
+
+.rating-score {
+    display: inline-block;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 700;
+    margin: 15px 0;
+}
+
+.review-box {
+    background: #f8fafc;
+    padding: 18px;
+    border-radius: 12px;
+}
+
+.review-box p {
+    margin: 0;
+    color: #334155;
+}
+
+.booking-number {
+    color: #94a3b8;
+    margin-bottom: 0;
+}
+
+.empty-box {
+    text-align: center;
+    background: white;
+    padding: 60px;
+    border-radius: 16px;
+}
+
+@media(max-width:700px) {
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .rating-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+}
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Services{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+
+    <h1>Find a Service</h1>
+
+    <p>Choose a professional service for your needs.</p>
+
+</section>
+
+
+<section class="search-section">
+
+    <form method="GET"
+          action="{{ url_for('services') }}"
+          class="search-form">
+
+        <input type="text"
+               name="q"
+               value="{{ keyword }}"
+               placeholder="Search services...">
+
+        <select name="category">
+
+            <option value="">
+                All Categories
+            </option>
+
+            {% for category in categories %}
+
+            <option value="{{ category.category }}"
+                {% if selected_category == category.category %}
+                    selected
+                {% endif %}>
+
+                {{ category.category }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <button class="btn btn-primary">
+            Search
+        </button>
+
+    </form>
+
+</section>
+
+
+<section class="section">
+
+    <div class="service-grid">
+
+        {% for service in services %}
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                🛠️
+            </div>
+
+            <h3>{{ service.name }}</h3>
+
+            <p>
+                {{ service.description }}
+            </p>
+
+            <div class="worker-name">
+                Worker: {{ service.worker_name or "Available Worker" }}
+            </div>
+
+            <div class="service-category">
+                {{ service.category }}
+            </div>
+
+            <div class="service-bottom">
+
+                <strong>
+                    ₹{{ service.price }}
+                </strong>
+
+                <a class="small-btn"
+                   href="{{ url_for('service_detail', service_id=service.id) }}">
+                    View Service
+                </a>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-box">
+            No services found.
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

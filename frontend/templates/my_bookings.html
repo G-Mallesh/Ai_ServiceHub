@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}My Bookings{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+
+    <span class="hero-badge">CUSTOMER</span>
+
+    <h1>My Bookings</h1>
+
+    <p>Track your service from booking to completion.</p>
+
+</section>
+
+
+<section class="booking-section">
+
+{% for booking in bookings %}
+
+<div class="booking-full-card">
+
+    <div class="booking-top">
+
+        <div>
+
+            <span class="service-category">
+                {{ booking.category or "Service" }}
+            </span>
+
+            <h2>
+                {{ booking.service_name }}
+            </h2>
+
+            <p>
+                Worker:
+                <strong>
+                    {{ booking.worker_name or "Waiting for worker" }}
+                </strong>
+            </p>
+
+        </div>
+
+
+        <div class="booking-price">
+
+            <span>Amount</span>
+
+            <strong>
+                ₹{{ booking.price }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="booking-details">
+
+        <div>
+            <span>Date</span>
+            <strong>{{ booking.booking_date }}</strong>
+        </div>
+
+        <div>
+            <span>Time</span>
+            <strong>{{ booking.booking_time }}</strong>
+        </div>
+
+        <div>
+            <span>Phone</span>
+            <strong>
+                {{ booking.worker_phone or "Not available" }}
+            </strong>
+        </div>
+
+        <div>
+            <span>Status</span>
+
+            <strong class="status status-{{ booking.status|lower }}">
+                {{ booking.status }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="booking-actions">
+
+        <!-- MAP -->
+
+        {% if booking.worker_latitude or booking.customer_latitude %}
+
+        <a href="{{ url_for('booking_map', booking_id=booking.id) }}"
+           class="action-btn blue">
+            🗺️ Open Map
+        </a>
+
+        {% endif %}
+
+
+        <!-- PAYMENT -->
+
+        {% if booking.status == "Completed" and booking.payment_status != "Paid" %}
+
+        <a href="{{ url_for('payment_page', booking_id=booking.id) }}"
+           class="action-btn green">
+            💳 Pay Now
+        </a>
+
+        {% endif %}
+
+
+        <!-- RATING -->
+
+        {% if booking.status == "Completed" and booking.payment_status == "Paid" %}
+
+        <a href="{{ url_for('rate_service', booking_id=booking.id) }}"
+           class="action-btn yellow">
+            ⭐ Rate Service
+        </a>
+
+        {% endif %}
+
+
+        <!-- MESSAGE -->
+
+        {% if booking.worker_id %}
+
+        <a href="{{ url_for('message_worker', booking_id=booking.id) }}"
+           class="action-btn purple">
+            💬 Message Worker
+        </a>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="payment-status">
+
+        Payment:
+
+        {% if booking.payment_status == "Paid" %}
+
+            <span class="paid">
+                ✓ Paid
+            </span>
+
+        {% else %}
+
+            <span class="unpaid">
+                Not Paid
+            </span>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% else %}
+
+<div class="empty-box">
+
+    <h2>No bookings yet</h2>
+
+    <p>Find a service and make your first booking.</p>
+
+    <a href="{{ url_for('services') }}"
+       class="btn btn-primary">
+        Browse Services
+    </a>
+
+</div>
+
+{% endfor %}
+
+</section>
+
+{% endblock %}

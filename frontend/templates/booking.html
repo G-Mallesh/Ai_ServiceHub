@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Book Service{% endblock %}
+
+{% block content %}
+
+<div class="form-page">
+
+    <div class="form-card">
+
+        <h1>Book Service</h1>
+
+        <div class="booking-service">
+
+            <h3>{{ service.name }}</h3>
+
+            <p>{{ service.description }}</p>
+
+            <strong>₹{{ service.price }}</strong>
+
+        </div>
+
+        <form method="POST">
+
+            <label>Booking Date</label>
+            <input type="date"
+                   name="booking_date"
+                   required>
+
+            <label>Booking Time</label>
+            <input type="time"
+                   name="booking_time"
+                   required>
+
+            <label>Phone Number</label>
+            <input type="text"
+                   name="customer_phone"
+                   value="{{ customer.phone or '' }}"
+                   required>
+
+            <label>Service Location</label>
+
+            <textarea
+                name="customer_location"
+                id="customer_location"
+                placeholder="Enter your complete service address"
+                required>{{ customer.location or '' }}</textarea>
+
+            <div class="location-row">
+
+                <div>
+                    <label>Latitude</label>
+
+                    <input
+                        type="text"
+                        name="customer_latitude"
+                        id="latitude"
+                        value="{{ customer.latitude or '' }}"
+                        readonly>
+                </div>
+
+                <div>
+                    <label>Longitude</label>
+
+                    <input
+                        type="text"
+                        name="customer_longitude"
+                        id="longitude"
+                        value="{{ customer.longitude or '' }}"
+                        readonly>
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                onclick="getLocation()"
+                class="btn btn-secondary full">
+
+                📍 Use My Current Location
+
+            </button>
+
+            <div id="location-status"
+                 style="margin:12px 0;font-weight:600;">
+            </div>
+
+            <button
+                type="submit"
+                class="btn btn-primary full">
+
+                Confirm Booking
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function getLocation() {
+
+    const status =
+        document.getElementById("location-status");
+
+    if (!navigator.geolocation) {
+
+        status.innerHTML =
+            "❌ GPS is not supported by this browser.";
+
+        return;
+    }
+
+    status.innerHTML =
+        "📡 Getting your current location...";
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position) {
+
+            const latitude =
+                position.coords.latitude;
+
+            const longitude =
+                position.coords.longitude;
+
+            document.getElementById("latitude").value =
+                latitude;
+
+            document.getElementById("longitude").value =
+                longitude;
+
+            status.innerHTML =
+                "✅ GPS location captured successfully.";
+
+        },
+
+        function(error) {
+
+            console.log(error);
+
+            status.innerHTML =
+                "❌ Unable to get GPS location. " +
+                "Please allow location access.";
+
+        },
+
+        {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+        }
+
+    );
+
+}
+
+</script>
+
+{% endblock %}

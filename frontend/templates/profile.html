@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+<div class="profile-page">
+
+    <div class="profile-card">
+
+        <div class="profile-avatar">
+            {{ user.name[0]|upper }}
+        </div>
+
+        <h1>{{ user.name }}</h1>
+
+        <span class="role-badge">
+            {{ user.role|upper }}
+        </span>
+
+
+        <div class="profile-info">
+
+            <div>
+                <span>Email</span>
+                <strong>{{ user.email }}</strong>
+            </div>
+
+            <div>
+                <span>Phone</span>
+                <strong>{{ user.phone or "Not provided" }}</strong>
+            </div>
+
+            <div>
+                <span>Location</span>
+                <strong>{{ user.location or "Not provided" }}</strong>
+            </div>
+
+            <div>
+                <span>City</span>
+                <strong>{{ user.city or "Not provided" }}</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

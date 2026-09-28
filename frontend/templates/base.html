@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}AI Service Hub{% endblock %}</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        AI <span>ServiceHub</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('services') }}">Services</a>
+
+        {% if session.get('user_id') %}
+
+            {% if session.get('role') == 'customer' %}
+                <a href="{{ url_for('customer_dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('my_bookings') }}">My Bookings</a>
+            {% endif %}
+
+            {% if session.get('role') == 'worker' %}
+                <a href="{{ url_for('worker_dashboard') }}">Worker Dashboard</a>
+            {% endif %}
+
+            <a href="{{ url_for('profile') }}">Profile</a>
+            <a href="{{ url_for('logout') }}" class="nav-logout">Logout</a>
+
+        {% else %}
+
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}" class="nav-register">Register</a>
+
+        {% endif %}
+
+    </div>
+
+</nav>
+
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+    {% if messages %}
+
+        <div class="flash-container">
+
+            {% for category, message in messages %}
+
+                <div class="flash {{ category }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+{% endwith %}
+
+
+<main>
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+
+
+<footer>
+
+    <div>
+        <strong>AI ServiceHub</strong>
+        <p>Book trusted local services easily.</p>
+    </div>
+
+    <div>
+        <p>© 2026 AI ServiceHub</p>
+    </div>
+
+</footer>
+
+</body>
+</html>

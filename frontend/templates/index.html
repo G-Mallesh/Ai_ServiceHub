@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}AI Service Hub{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <span class="hero-badge">AI POWERED SERVICE PLATFORM</span>
+
+        <h1>
+            Find Trusted Services
+            <span>Near You</span>
+        </h1>
+
+        <p>
+            Book professional workers, track your service,
+            communicate with workers and make secure payments.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="{{ url_for('services') }}" class="btn btn-primary">
+                Explore Services
+            </a>
+
+            {% if not session.get('user_id') %}
+
+                <a href="{{ url_for('register') }}" class="btn btn-outline">
+                    Get Started
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="section-heading">
+
+        <span>POPULAR</span>
+
+        <h2>Available Services</h2>
+
+        <p>Choose a service and book a trusted worker.</p>
+
+    </div>
+
+
+    <div class="service-grid">
+
+        {% for service in services %}
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                🔧
+            </div>
+
+            <h3>{{ service.name }}</h3>
+
+            <p>
+                {{ service.description or "Professional service available." }}
+            </p>
+
+            <div class="service-category">
+                {{ service.category }}
+            </div>
+
+            <div class="service-bottom">
+
+                <strong>
+                    ₹{{ service.price }}
+                </strong>
+
+                <a href="{{ url_for('service_detail', service_id=service.id) }}"
+                   class="small-btn">
+                    View
+                </a>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-box">
+            <h3>No services available</h3>
+            <p>Workers can add services from their dashboard.</p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

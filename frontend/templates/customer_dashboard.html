@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Customer Dashboard{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-header">
+
+    <div>
+
+        <span class="hero-badge">CUSTOMER</span>
+
+        <h1>Welcome, {{ user.name }}</h1>
+
+        <p>Manage your services, bookings and payments.</p>
+
+    </div>
+
+</section>
+
+
+<div class="dashboard-grid">
+
+    <div class="dashboard-card">
+
+        <span>📅</span>
+
+        <h3>{{ bookings|length }}</h3>
+
+        <p>Total Bookings</p>
+
+    </div>
+
+    <div class="dashboard-card">
+
+        <span>📍</span>
+
+        <h3>Location</h3>
+
+        <p>{{ user.location or "Not saved" }}</p>
+
+    </div>
+
+</div>
+
+
+<div class="form-card location-card">
+
+    <h2>📍 My Service Location</h2>
+
+    <p>Save your location so workers can find you.</p>
+
+    <form method="POST"
+          action="{{ url_for('save_customer_location') }}">
+
+        <label>Address</label>
+
+        <textarea name="location"
+                  required>{{ user.location or '' }}</textarea>
+
+        <label>City</label>
+
+        <input type="text"
+               name="city"
+               value="{{ user.city or '' }}">
+
+
+        <div class="location-row">
+
+            <div>
+
+                <label>Latitude</label>
+
+                <input type="text"
+                       name="latitude"
+                       value="{{ user.latitude or '' }}">
+
+            </div>
+
+            <div>
+
+                <label>Longitude</label>
+
+                <input type="text"
+                       name="longitude"
+                       value="{{ user.longitude or '' }}">
+
+            </div>
+
+        </div>
+
+        <button class="btn btn-primary">
+            Save Location
+        </button>
+
+    </form>
+
+</div>
+
+
+<section class="section">
+
+    <div class="section-heading">
+
+        <span>BOOKINGS</span>
+
+        <h2>Recent Bookings</h2>
+
+    </div>
+
+
+    <div class="booking-list">
+
+        {% for booking in bookings %}
+
+        <div class="booking-card">
+
+            <div>
+
+                <h3>{{ booking.service_name }}</h3>
+
+                <p>
+                    Worker:
+                    {{ booking.worker_name or "Waiting" }}
+                </p>
+
+                <p>
+                    {{ booking.booking_date }}
+                    at
+                    {{ booking.booking_time }}
+                </p>
+
+            </div>
+
+
+            <div class="booking-right">
+
+                <span class="status status-{{ booking.status|lower }}">
+                    {{ booking.status }}
+                </span>
+
+                <strong>
+                    ₹{{ booking.price }}
+                </strong>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-box">
+            No bookings yet.
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

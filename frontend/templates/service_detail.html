@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}{{ service.name }}{% endblock %}
+
+{% block content %}
+
+<section class="detail-page">
+
+    <div class="detail-card">
+
+        <div class="detail-icon">
+            🔧
+        </div>
+
+        <div class="detail-content">
+
+            <span class="service-category">
+                {{ service.category }}
+            </span>
+
+            <h1>{{ service.name }}</h1>
+
+            <p class="detail-description">
+                {{ service.description }}
+            </p>
+
+
+            <div class="detail-info">
+
+                <div>
+                    <span>Worker</span>
+                    <strong>
+                        {{ service.worker_name or "Worker" }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Phone</span>
+                    <strong>
+                        {{ service.worker_phone or "Not available" }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Price</span>
+                    <strong>
+                        ₹{{ service.price }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Location</span>
+                    <strong>
+                        {{ service.worker_location or "Not available" }}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            {% if session.get('role') == 'customer' %}
+
+                <a href="{{ url_for('book_service', service_id=service.id) }}"
+                   class="btn btn-primary">
+                    Book This Service
+                </a>
+
+            {% elif not session.get('user_id') %}
+
+                <a href="{{ url_for('login') }}"
+                   class="btn btn-primary">
+                    Login to Book
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

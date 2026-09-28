@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Message Worker{% endblock %}
+
+{% block content %}
+
+<div class="message-page">
+
+    <div class="message-card">
+
+        <h1>💬 Message Worker</h1>
+
+        <p>
+            Worker:
+            <strong>{{ booking.worker_name }}</strong>
+        </p>
+
+
+        <div class="messages">
+
+            {% for message in messages %}
+
+            <div class="message">
+
+                <strong>
+                    {{ message.sender_name }}
+                </strong>
+
+                <p>
+                    {{ message.message }}
+                </p>
+
+                <small>
+                    {{ message.created_at }}
+                </small>
+
+            </div>
+
+            {% else %}
+
+            <div class="empty-box">
+                No messages yet.
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        <form method="POST">
+
+            <textarea name="message"
+                      placeholder="Type your message..."
+                      required></textarea>
+
+            <button class="btn btn-primary full">
+                Send Message
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

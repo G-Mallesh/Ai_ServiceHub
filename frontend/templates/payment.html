@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+
+<div class="payment-page">
+
+    <div class="payment-card">
+
+        <div class="payment-icon">
+            💳
+        </div>
+
+        <h1>Secure Payment</h1>
+
+        <p>Complete payment for your service.</p>
+
+
+        <div class="payment-summary">
+
+            <div>
+                <span>Service</span>
+                <strong>
+                    {{ booking.service_name }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Worker</span>
+                <strong>
+                    {{ booking.worker_name }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Amount</span>
+                <strong class="payment-amount">
+                    ₹{{ booking.price }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <button id="pay-button"
+                class="btn btn-primary full">
+            💳 Pay Now
+        </button>
+
+        <p class="secure-text">
+            🔒 Secure payment powered by Razorpay
+        </p>
+
+    </div>
+
+</div>
+
+
+{% if razorpay_key_id %}
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+document.getElementById("pay-button").onclick = function () {
+
+    const options = {
+
+        key: "{{ razorpay_key_id }}",
+
+        amount: {{ (booking.price * 100)|int }},
+
+        currency: "INR",
+
+        name: "AI ServiceHub",
+
+        description: "{{ booking.service_name }}",
+
+        handler: function(response) {
+
+            window.location.href =
+                "{{ url_for('payment_success', booking_id=booking.id) }}"
+                + "?payment_id="
+                + response.razorpay_payment_id;
+
+        },
+
+        theme: {
+            color: "#2563eb"
+        }
+
+    };
+
+    const razorpay = new Razorpay(options);
+
+    razorpay.open();
+
+};
+
+</script>
+
+{% else %}
+
+<script>
+
+document.getElementById("pay-button").onclick = function () {
+
+    alert(
+        "Razorpay is not configured yet. Add RAZORPAY_KEY_ID to your .env file."
+    );
+
+};
+
+</script>
+
+{% endif %}
+
+{% endblock %}

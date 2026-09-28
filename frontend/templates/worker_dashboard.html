@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}Worker Dashboard{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-header">
+
+    <div>
+
+        <span class="hero-badge">WORKER</span>
+
+        <h1>Worker Dashboard</h1>
+
+        <p>
+            Manage your services and customer bookings.
+        </p>
+
+    </div>
+
+
+    <a href="{{ url_for('add_service') }}"
+       class="btn btn-primary">
+        + Add Service
+    </a>
+
+</section>
+
+
+<div class="dashboard-grid">
+
+    <div class="dashboard-card">
+
+        <span>🛠️</span>
+
+        <h3>{{ services|length }}</h3>
+
+        <p>My Services</p>
+
+    </div>
+
+    <div class="dashboard-card">
+
+        <span>📅</span>
+
+        <h3>{{ bookings|length }}</h3>
+
+        <p>Bookings</p>
+
+    </div>
+
+</div>
+
+
+<section class="section">
+
+    <div class="section-heading">
+
+        <span>MY SERVICES</span>
+
+        <h2>Services I Offer</h2>
+
+    </div>
+
+
+    <div class="service-grid">
+
+        {% for service in services %}
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                🛠️
+            </div>
+
+            <h3>{{ service.name }}</h3>
+
+            <p>{{ service.description }}</p>
+
+            <div class="service-category">
+                {{ service.category }}
+            </div>
+
+            <div class="service-bottom">
+
+                <strong>
+                    ₹{{ service.price }}
+                </strong>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-box">
+            You haven't added any services yet.
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="section-heading">
+
+        <span>REQUESTS</span>
+
+        <h2>Customer Bookings</h2>
+
+    </div>
+
+
+    <div class="booking-list">
+
+        {% for booking in bookings %}
+
+        <div class="booking-full-card">
+
+            <div class="booking-top">
+
+                <div>
+
+                    <h2>
+                        {{ booking.service_name }}
+                    </h2>
+
+                    <p>
+                        Customer:
+                        <strong>
+                            {{ booking.customer_name }}
+                        </strong>
+                    </p>
+
+                    <p>
+                        📞 {{ booking.customer_phone }}
+                    </p>
+
+                </div>
+
+                <div class="booking-price">
+
+                    <span>Amount</span>
+
+                    <strong>
+                        ₹{{ booking.price }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="booking-details">
+
+                <div>
+                    <span>Date</span>
+                    <strong>
+                        {{ booking.booking_date }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Time</span>
+                    <strong>
+                        {{ booking.booking_time }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Status</span>
+                    <strong class="status status-{{ booking.status|lower }}">
+                        {{ booking.status }}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="worker-actions">
+
+                {% if booking.status == "Pending" %}
+
+                <form method="POST"
+                      action="{{ url_for('accept_booking', booking_id=booking.id) }}">
+
+                    <button class="action-btn green">
+                        ✓ Accept Booking
+                    </button>
+
+                </form>
+
+
+                <form method="POST"
+                      action="{{ url_for('reject_booking', booking_id=booking.id) }}">
+
+                    <button class="action-btn red">
+                        ✕ Reject
+                    </button>
+
+                </form>
+
+                {% endif %}
+
+
+                {% if booking.status == "Approved" %}
+
+                <a href="{{ url_for('booking_map', booking_id=booking.id) }}"
+                   class="action-btn blue">
+                    🗺️ Open Map
+                </a>
+                <div class="worker-dashboard-actions">
+
+    <a href="{{ url_for('worker_messages') }}"
+       class="action-btn blue">
+        💬 Customer Messages
+    </a>
+
+    <a href="{{ url_for('worker_ratings') }}"
+       class="action-btn green">
+        ⭐ Customer Ratings
+    </a>
+
+</div>  
+                <form method="POST"
+                      action="{{ url_for('complete_booking', booking_id=booking.id) }}">
+
+                    <button class="action-btn green">
+                        ✓ Complete Work
+                    </button>
+
+                </form>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-box">
+            No customer bookings yet.
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

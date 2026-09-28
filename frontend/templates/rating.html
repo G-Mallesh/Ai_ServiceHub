@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Rate Service{% endblock %}
+
+{% block content %}
+
+<div class="form-page">
+
+    <div class="form-card rating-card">
+
+        <div class="rating-icon">
+            ⭐
+        </div>
+
+        <h1>Rate Your Service</h1>
+
+        <p>
+            How was your experience with
+            <strong>{{ booking.worker_name }}</strong>?
+        </p>
+
+
+        <form method="POST">
+
+            <label>Your Rating</label>
+
+            <select name="rating" required>
+
+                <option value="">
+                    Select Rating
+                </option>
+
+                <option value="5">
+                    ⭐⭐⭐⭐⭐ Excellent
+                </option>
+
+                <option value="4">
+                    ⭐⭐⭐⭐ Very Good
+                </option>
+
+                <option value="3">
+                    ⭐⭐⭐ Good
+                </option>
+
+                <option value="2">
+                    ⭐⭐ Poor
+                </option>
+
+                <option value="1">
+                    ⭐ Very Poor
+                </option>
+
+            </select>
+
+
+            <label>Review</label>
+
+            <textarea name="review"
+                      rows="5"
+                      placeholder="Write your review..."></textarea>
+
+
+            <button type="submit"
+                    class="btn btn-primary full">
+                Submit Rating
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

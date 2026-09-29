@@ -6,35 +6,13 @@ load_dotenv()
 
 class Config:
 
-    SECRET_KEY = os.getenv(
-        "SECRET_KEY",
-        "ai-service-hub-secret-key"
-    )
+    SECRET_KEY = os.getenv("SECRET_KEY")
 
-    MYSQL_HOST = os.getenv(
-        "DB_HOST",
-        "localhost"
-    )
-
-    MYSQL_PORT = int(os.getenv(
-        "DB_PORT",
-        "3306"
-    ))
-
-    MYSQL_USER = os.getenv(
-        "DB_USER",
-        "root"
-    )
-
-    MYSQL_PASSWORD = os.getenv(
-        "DB_PASSWORD",
-        "root"
-    )
-
-    MYSQL_DATABASE = os.getenv(
-        "DB_NAME",
-        "ai_service_hub"
-    )
+    MYSQL_HOST = os.getenv("DB_HOST")
+    MYSQL_PORT = int(os.getenv("DB_PORT", "3306"))
+    MYSQL_USER = os.getenv("DB_USER")
+    MYSQL_PASSWORD = os.getenv("DB_PASSWORD")
+    MYSQL_DATABASE = os.getenv("DB_NAME")
 
     GOOGLE_MAPS_API_KEY = os.getenv(
         "GOOGLE_MAPS_API_KEY",
@@ -49,4 +27,15 @@ class Config:
     RAZORPAY_KEY_SECRET = os.getenv(
         "RAZORPAY_KEY_SECRET",
         "jjONV0WW5UEyplYbNt2noobI"
+
+    )
+
+    OPENAI_API_KEY = os.getenv(
+        "OPENAI_API_KEY",
+        ""
+    )
+
+    OPENAI_MODEL = os.getenv(
+        "OPENAI_MODEL",
+        "gpt-5"
     )

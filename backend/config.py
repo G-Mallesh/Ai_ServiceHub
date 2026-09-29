@@ -16,6 +16,11 @@ class Config:
         "localhost"
     )
 
+    MYSQL_PORT = int(os.getenv(
+        "DB_PORT",
+        "3306"
+    ))
+
     MYSQL_USER = os.getenv(
         "DB_USER",
         "root"
